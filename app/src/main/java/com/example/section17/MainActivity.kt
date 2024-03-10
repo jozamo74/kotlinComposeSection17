@@ -10,6 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.section17.model.Routes.*
 import com.example.section17.ui.theme.Section17Theme
 
 class MainActivity : ComponentActivity() {
@@ -22,7 +28,39 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+//                    Greeting("Android")
+                    val navigationController = rememberNavController()
+                    NavHost(
+                        navController = navigationController,
+                        startDestination = Pantalla1.route
+                    ) {
+                        composable(Pantalla1.route) { Screen1(navigationController) }
+                        composable(
+                            Pantalla2.route,
+                            arguments = listOf(navArgument("id") { type = NavType.IntType })
+                        ) {
+                            Screen2(
+                                navigationController,
+                                it.arguments?.getInt("id") ?: 0
+                            )
+                        }
+                        composable(Pantalla3.route) { Screen3(navigationController) }
+                        composable("pantalla4/{name}") { navBackStackEntry ->
+                            Screen4(
+                                navigationController = navigationController,
+                                navBackStackEntry.arguments?.getString("name")!!
+                            )
+                        }
+                        composable(
+                            Pantalla5.route,
+                            arguments = listOf(navArgument("name") { defaultValue = "" })
+                        ) {
+                            Screen5(
+                                navigationController = navigationController,
+                                it.arguments?.getString("name")
+                            )
+                        }
+                    }
                 }
             }
         }
